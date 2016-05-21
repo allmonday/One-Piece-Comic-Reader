@@ -1,5 +1,11 @@
 # one-piece
 
+# update
+
+```shell
+./run.sh
+```
+
 # run
 
 ```shell

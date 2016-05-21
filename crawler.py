@@ -16,3 +16,5 @@ dumps = json.dumps({"data": formatted})
 
 with open('one-piece.json', 'w') as f:
     f.write(dumps) 
+
+print 'updated'
