@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>title</title>
+	<script src="http://cdn.bootcss.com/jquery/2.2.4/jquery.js"></script>
+	<script src="http://cdn.bootcss.com/vue/1.0.24/vue.min.js"></script>
+	<script src="http://cdn.bootcss.com/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+	<link href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<script src="http://cdn.bootcss.com/lodash.js/4.12.0/lodash.min.js"></script>
+	<style type="text/css">
+		html, body {
+			height: 100%;
+		}
+		#demo {
+			float: left;
+			width: 15%;
+			overflow: scroll;
+			height: 100%;
+		}
+		#demo .demo-span {
+			padding-left: 15px;
+			cursor: pointer;
+		}
+		#demo .list-group-item.selected {
+			background: #ccc;
+		}
+		#content {
+			padding: 10px;
+			margin-left: 15%;
+			overflow: scroll;
+			height: 100%;
+		}
+		#content .lazy {
+			margin: 5px;
+			border: 1px solid #ccc;
+		}
+	</style>
+</head>
+<body>
+	<div id="demo">
+		<ul class="list-group">
+			<li class="list-group-item" v-bind:class="{'selected': op.selected }" v-for="op in onepiece" track-by="id">
+				<span class="demo-span" v-on:click="callOther(op, $index)">{{ op.name }}</span>
+			</li>
+		</ul>
+	</div>
+
+	<div id="content">
+		<p>{{ number }} </p>
+		<img class="lazy" v-for="url in images" data-original="{{ url }}">
+	</div>
+
+	<script type="text/javascript">
+	$(function () {
+		var content = new Vue({
+			el: "#content",
+			data: {
+				images: null,
+				number: null
+			},
+			methods: {
+				fetchData: function (id) {
+					this.number = id;
+					$.getJSON('./links/' + id, function (data) {
+						this.images = data.data;
+						setTimeout(function () {
+							$("img.lazy").lazyload();
+						}, 0);
+					}.bind(this))
+				}
+			}
+		})
+
+		var demo = new Vue({
+			el: "#demo",
+			data: {
+				onepiece: null,
+			},  	
+			created: function () {
+    			this.fetchData();
+  			},
+			methods: {
+				callOther: function (page, index) {
+					_.map(this.onepiece, function (o) {
+						o.selected = false;
+					})
+					// 卧槽, 改变数组中的对象属性太麻烦了.
+					var tmp = this.onepiece[index];
+					var ttmp = {
+						id: tmp.id,
+						link: tmp.link,
+						name: tmp.name,
+						selected: true
+					}
+					this.onepiece.$set(index, ttmp);
+					content.fetchData(page.id);
+				},
+
+				fetchData: function () {
+					$.getJSON('./one-piece.json', function (data) {
+						this.onepiece = data.data;
+						_.map(this.onepiece, function (o) {
+							o.selected = false;
+						})
+					}.bind(this))
+				}
+			}
+		})
+	})
+	</script>
+</body>
+</html>
