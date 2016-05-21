@@ -9,7 +9,7 @@
 # run
 
 ```shell
-python -m SimpleHTTPClient 
+npm install -g http-server
 # or
 http-server
 ```
