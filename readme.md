@@ -1,5 +1,11 @@
 # one-piece
 
+# start
+
+```shell
+pip install -r requirement.txt
+```
+
 # update
 
 ```shell
