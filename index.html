@@ -105,7 +105,8 @@
 
 				fetchData: function () {
 					$.getJSON('./one-piece.json', function (data) {
-						this.onepiece = data.data;
+						var rdata = _.reverse(data.data);
+						this.onepiece = rdata;
 						_.map(this.onepiece, function (o) {
 							o.selected = false;
 						})
